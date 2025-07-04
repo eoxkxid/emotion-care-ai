@@ -1,2 +1,4 @@
-# emotion-care-ai
-## EmotionCare AI 🤖💬  EmotionCare AI is an intelligent assistant that analyzes user emotions through text input and recommends personalized content such as movies, music, and motivational quotes.    By combining Natural Language Processing (NLP) and Generative AI, it aims to support users’ mental well-being with empathy and care.
+EmotionCare AI는 사용자의 텍스트 입력을 통해 감정을 분석하고,  
+그 감정에 맞는 영화, 음악, 위로·동기부여 문구를 추천하는 멘탈 케어 인공지능 비서입니다.
+
+자연어 처리(NLP)와 생성형 AI 기술을 결합하여, 사용자에게 따뜻한 공감과 정서적 지지를 제공합니다.
