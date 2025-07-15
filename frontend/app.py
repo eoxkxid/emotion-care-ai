@@ -6,7 +6,7 @@ st.write("당신의 하루는 어땠나요?")
 
 user_input = st.text_area("지금 기분을 자유롭게 적어주세요.")
 
-if st.button("위로"):
+if st.button("감정 전달"):
     if not user_input.strip():
         st.warning("문장을 입력해 주세요.")
     else:
@@ -34,5 +34,3 @@ if st.button("위로"):
 
         else:
             st.error("서버에서 오류가 발생했어요. API가 실행 중인지 확인해보세요.")
-
-            

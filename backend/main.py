@@ -1,6 +1,11 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
+import random
+
+# GPT 위로 문구 생성 함수 추가
+from .utils.gpt_quote import generate_quote_with_gpt
 
 app = FastAPI()
 
@@ -17,25 +22,38 @@ app.add_middleware(
 class TextInput(BaseModel):
     text: str
 
+# 데이터 로드 및 초기화
+content_df = pd.read_csv("data/content.csv")
+
+# 컨텐츠 추천 함수 정의
+def get_random_recommendation(emotion_tag: str):
+    filtered_content = content_df[content_df["emotion"] == emotion_tag]
+
+    movies = filtered_content[filtered_content["type"] == "movie"]["title"].tolist()
+    music = filtered_content[filtered_content["type"] == "music"]["title"].tolist()
+
+    recommended_movie = random.choice(movies) if movies else "추천 영화가 없습니다."
+    recommended_music = random.choice(music) if music else "추천 음악이 없습니다."
+
+    return recommended_movie, recommended_music
+
 @app.post("/recommend")
 async def recommend_emotion_care(item: TextInput):
-    user_text = item.text
+    user_text = item.text.lower()
 
-    # 간단한 감정 분석 (예시)
-    if any(word in user_text.lower() for word in ["슬프", "힘들", "우울", "짜증"]):
-        emotion = "부정"
-        movie = "인사이드 아웃"
-        music = "잔잔한 피아노곡"
-        quote = "지나가는 감정이에요. 당신은 충분히 잘하고 있어요."
-    else:
-        emotion = "긍정"
-        movie = "코코"
-        music = "기분 좋은 재즈"
-        quote = "오늘처럼 웃을 수 있는 날이 자주 오길 바라요."
+    # 임시 감정 분석 -> 이후 실제 모델로 교체 필요
+    negative_keywords = ["슬프", "힘들", "우울", "짜증"]
+    emotion = "부정" if any(word in user_text for word in negative_keywords) else "긍정"
+
+    # 콘텐츠 추천
+    movie, music = get_random_recommendation(emotion)
+
+    # GPT 기반 위로 문구 생성 (상황 맥락 반영)
+    quote = generate_quote_with_gpt(user_input=user_text, emotion=emotion)
 
     return {
         "emotion": emotion,
         "movie": movie,
         "music": music,
         "quote": quote
-    }    
+    }
